@@ -1,7 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import ResultModal from "./ResultModal";
 
 const TimerChallenge = ({ title, targetTime }) => {
   const timer = useRef();
+  const dialog = useRef();
   const [timerExpired, setTimerExpired] = useState(false);
   const [timerStarted, setTimerStarted] = useState(false);
 
@@ -10,6 +12,7 @@ const TimerChallenge = ({ title, targetTime }) => {
     timer.current = setTimeout(() => {
       setTimerExpired(true);
       setTimerStarted(false);
+      dialog.current.showModal();
     }, targetTime * 1000);
   };
 
@@ -17,24 +20,31 @@ const TimerChallenge = ({ title, targetTime }) => {
     setTimerStarted(false);
     clearTimeout(timer.current);
     setTimerExpired(false);
+    dialog.current.showModal();
   };
 
   return (
-    <section className="challenge">
-      <h2>{title}</h2>
-      {timerExpired && !timerStarted && <p>You Lost!</p>}
-      <p className="challenge-time">
-        {targetTime} second{targetTime > 1 ? "s" : ""}
-      </p>
-      <p>
-        <button onClick={timerStarted ? handleStop : handleStart}>
-          {timerStarted ? "Stop Challenge" : "Start Challenge"}
-        </button>
-      </p>
-      <p className={timerStarted ? "active" : undefined}>
-        {timerStarted ? "Time is running..." : "Timer inactive"}
-      </p>
-    </section>
+    <>
+      <ResultModal
+        ref={dialog}
+        targetTime={targetTime}
+        timerExpired={timerExpired}
+      />
+      <section className="challenge">
+        <h2>{title}</h2>
+        <p className="challenge-time">
+          {targetTime} second{targetTime > 1 ? "s" : ""}
+        </p>
+        <p>
+          <button onClick={timerStarted ? handleStop : handleStart}>
+            {timerStarted ? "Stop Challenge" : "Start Challenge"}
+          </button>
+        </p>
+        <p className={timerStarted ? "active" : undefined}>
+          {timerStarted ? "Time is running..." : "Timer inactive"}
+        </p>
+      </section>
+    </>
   );
 };
 
