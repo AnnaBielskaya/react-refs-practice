@@ -7,6 +7,7 @@ export default function Player() {
   const handleClick = () => {
     setEnteredName(playerInput.current.value);
   };
+  console.log("updated");
 
   return (
     <section id="player">
